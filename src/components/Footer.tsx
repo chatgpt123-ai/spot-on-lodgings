@@ -42,8 +42,8 @@ const Footer = () => {
             <h3 className="text-sm font-semibold text-gray-700 tracking-wider uppercase">Contact Us</h3>
             <ul className="mt-4 space-y-4">
               <li className="text-base text-gray-500">
-                <span className="block">123 Main Street</span>
-                <span className="block">Bangalore, 560001</span>
+                <span className="block">SRM Institute of Science and Technology</span>
+                <span className="block">Kattankulathur, Chennai</span>
               </li>
               <li className="text-base text-gray-500">
                 <span className="block">info@spotonlodgings.com</span>
@@ -55,7 +55,7 @@ const Footer = () => {
         
         <div className="mt-8 border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between">
           <p className="text-base text-gray-500">
-            &copy; 2025 Spot-On Lodgings. All rights reserved.
+            &copy; 2025 SRM Institute of Science and Technology. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex space-x-6">
             <Link to="#" className="text-gray-500 hover:text-pg-purple">
@@ -72,3 +72,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
