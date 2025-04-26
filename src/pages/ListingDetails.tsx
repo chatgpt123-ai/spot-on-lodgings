@@ -1,30 +1,16 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { PGListing } from '../types/pg';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PGDetails from '../components/PGDetails';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
+import { usePGListing } from '@/hooks/usePGListings';
 
 const ListingDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: pgData, isLoading, error } = useQuery({
-    queryKey: ['pg-listing', id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('pg_listings')
-        .select('*')
-        .eq('id', id)
-        .single();
-      
-      if (error) throw error;
-      return data;
-    }
-  });
+  const { data: pgData, isLoading, error } = usePGListing(id || '');
 
   if (error) {
     return (

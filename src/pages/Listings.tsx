@@ -84,7 +84,6 @@ const Listings = () => {
     setVisibleCount((prev) => prev + 6);
   };
 
-  // Apply overlay to body when sidebar is open on mobile
   useEffect(() => {
     if (isSidebarOpen) {
       document.body.classList.add('overflow-hidden');
