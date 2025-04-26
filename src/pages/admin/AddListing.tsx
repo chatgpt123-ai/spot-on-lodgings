@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import AdminMobileNav from '../../components/admin/AdminMobileNav';
 import AdminPGForm from '../../components/admin/AdminPGForm';
-import { v4 as uuidv4 } from 'uuid';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const AddListing = () => {
   const navigate = useNavigate();
@@ -18,10 +19,38 @@ const AddListing = () => {
     }
   }, [navigate]);
 
-  const handleSubmit = (data: any) => {
-    // In a real app, would call API to add new listing
-    console.log('New Listing Data:', { id: uuidv4(), ...data });
-    navigate('/admin/dashboard');
+  const handleSubmit = async (data: any) => {
+    try {
+      // Prepare the data for Supabase (convert camelCase to snake_case)
+      const listing = {
+        name: data.name,
+        location: data.location,
+        area: data.area,
+        city: data.city,
+        rent: data.rent,
+        type: data.type,
+        room_type: data.roomType,
+        amenities: data.amenities,
+        images: data.images,
+        description: data.description,
+        contact_name: data.contactName,
+        contact_phone: data.contactPhone,
+        contact_email: data.contactEmail,
+        featured: data.featured,
+      };
+
+      const { error } = await supabase
+        .from('pg_listings')
+        .insert([listing]);
+
+      if (error) throw error;
+
+      toast.success('PG listing added successfully');
+      navigate('/admin/dashboard');
+    } catch (error) {
+      console.error('Error adding listing:', error);
+      toast.error('Failed to add PG listing');
+    }
   };
 
   return (
