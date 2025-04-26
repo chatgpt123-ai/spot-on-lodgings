@@ -9,7 +9,105 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      amenities: {
+        Row: {
+          id: string
+          name: string
+        }
+        Insert: {
+          id?: string
+          name: string
+        }
+        Update: {
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      locations: {
+        Row: {
+          city: string
+          id: string
+          name: string
+        }
+        Insert: {
+          city: string
+          id?: string
+          name: string
+        }
+        Update: {
+          city?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      pg_listings: {
+        Row: {
+          amenities: string[]
+          area: string
+          city: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at: string | null
+          description: string
+          featured: boolean | null
+          id: string
+          images: string[]
+          location: string
+          name: string
+          rating: number | null
+          rent: number
+          review_count: number | null
+          room_type: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          amenities?: string[]
+          area: string
+          city: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at?: string | null
+          description: string
+          featured?: boolean | null
+          id?: string
+          images?: string[]
+          location: string
+          name: string
+          rating?: number | null
+          rent: number
+          review_count?: number | null
+          room_type: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          amenities?: string[]
+          area?: string
+          city?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string | null
+          description?: string
+          featured?: boolean | null
+          id?: string
+          images?: string[]
+          location?: string
+          name?: string
+          rating?: number | null
+          rent?: number
+          review_count?: number | null
+          room_type?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

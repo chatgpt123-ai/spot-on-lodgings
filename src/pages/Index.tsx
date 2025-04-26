@@ -1,20 +1,14 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { pgListings } from '../data/pgListings';
 import PGCard from '../components/PGCard';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { MapPin, Search, Home, CheckCircle } from 'lucide-react';
+import { useFeaturedListings } from '@/hooks/usePGListings';
 
 const Index = () => {
-  const [featuredListings, setFeaturedListings] = useState(pgListings.slice(0, 4));
-
-  useEffect(() => {
-    const featured = pgListings.filter(pg => pg.featured).slice(0, 4);
-    setFeaturedListings(featured.length > 0 ? featured : pgListings.slice(0, 4));
-  }, []);
+  const { data: featuredListings, isLoading } = useFeaturedListings();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -117,13 +111,27 @@ const Index = () => {
               </Link>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {featuredListings.map((pg) => (
-                <div key={pg.id} className="h-full">
-                  <PGCard pg={pg} />
-                </div>
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-gray-200 h-48 rounded-t-lg"></div>
+                    <div className="p-4 space-y-4">
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {featuredListings?.slice(0, 4).map((pg) => (
+                  <div key={pg.id} className="h-full">
+                    <PGCard pg={pg} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
         

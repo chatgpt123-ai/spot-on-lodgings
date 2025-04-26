@@ -1,30 +1,32 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { pgListings } from '../data/pgListings';
 import { PGListing } from '../types/pg';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PGDetails from '../components/PGDetails';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 const ListingDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const [pgData, setPgData] = useState<PGListing | null>(null);
-  const [notFound, setNotFound] = useState(false);
-
-  useEffect(() => {
-    const pg = pgListings.find(pg => pg.id === id);
-    
-    if (pg) {
-      setPgData(pg);
-    } else {
-      setNotFound(true);
+  const { data: pgData, isLoading, error } = useQuery({
+    queryKey: ['pg-listing', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('pg_listings')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      return data;
     }
-  }, [id]);
+  });
 
-  if (notFound) {
+  if (error) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />
@@ -60,9 +62,7 @@ const ListingDetails = () => {
         </div>
         
         {/* PG Details */}
-        {pgData ? (
-          <PGDetails pg={pgData} />
-        ) : (
+        {isLoading ? (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
               <div className="animate-pulse flex flex-col items-center">
@@ -72,7 +72,9 @@ const ListingDetails = () => {
               </div>
             </div>
           </div>
-        )}
+        ) : pgData ? (
+          <PGDetails pg={pgData} />
+        ) : null}
       </main>
       
       <Footer />

@@ -1,15 +1,14 @@
-
 import React, { useState, useEffect } from 'react';
-import { pgListings } from '../data/pgListings';
 import { PGListing, FilterOptions } from '../types/pg';
 import PGCard from '../components/PGCard';
 import FilterSidebar from '../components/FilterSidebar';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Button } from '@/components/ui/button';
+import { usePGListings } from '@/hooks/usePGListings';
 
 const Listings = () => {
-  const [listings, setListings] = useState<PGListing[]>([]);
+  const { data: listings, isLoading } = usePGListings();
   const [filteredListings, setFilteredListings] = useState<PGListing[]>([]);
   const [visibleCount, setVisibleCount] = useState(6);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -23,12 +22,15 @@ const Listings = () => {
   });
 
   useEffect(() => {
-    setListings(pgListings);
-    setFilteredListings(pgListings);
-  }, []);
+    if (listings) {
+      setFilteredListings(listings);
+    }
+  }, [listings]);
 
   useEffect(() => {
     const applyFilters = () => {
+      if (!listings) return;
+
       const filtered = listings.filter((pg) => {
         // Location filter
         if (filters.location && pg.location !== filters.location) {
@@ -129,17 +131,26 @@ const Listings = () => {
               onToggle={toggleSidebar}
             />
             
-            {/* Listings */}
             <div className="flex-grow md:ml-8">
-              {/* Results info */}
               <div className="mb-6">
                 <p className="text-gray-600">
-                  {filteredListings.length} PG{filteredListings.length !== 1 ? 's' : ''} found
+                  {isLoading ? "Loading..." : `${filteredListings.length} PG${filteredListings.length !== 1 ? 's' : ''} found`}
                 </p>
               </div>
               
-              {/* Grid of PG cards */}
-              {filteredListings.length > 0 ? (
+              {isLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="bg-gray-200 h-48 rounded-t-lg"></div>
+                      <div className="p-4 space-y-4">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : filteredListings.length > 0 ? (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredListings.slice(0, visibleCount).map((pg) => (
@@ -149,7 +160,6 @@ const Listings = () => {
                     ))}
                   </div>
                   
-                  {/* Load more button */}
                   {visibleCount < filteredListings.length && (
                     <div className="mt-8 text-center">
                       <Button 
